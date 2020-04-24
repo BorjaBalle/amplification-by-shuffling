@@ -139,7 +139,8 @@ class NumericShuffleAmplificationBound(ShuffleAmplificationBound):
         assert self.get_delta(eps, max_eps0, n) >= delta
 
         def f(x):
-            return self.get_delta(eps, x, n) - delta
+            current_delta = self.get_delta(eps, x, n)
+            return current_delta - delta
 
         # Use numeric root finding
         sol = root_scalar(f, bracket=[eps, max_eps0], xtol=self.tol_opt)
@@ -197,12 +198,22 @@ class BennettExact(NumericShuffleAmplificationBound):
         eta = a / b_plus
 
         def phi(u):
-            return (1 + u) * log(1 + u) - u
+            phi = (1 + u) * log(1 + u) - u
+            if phi < 0:
+                # If phi < 0 (due to numerical errors), u should be small
+                # enough that we can use the Taylor approximation instead.
+                phi = u**2
+            return phi
+
+        exp_coef = alpha * phi(beta)
+        div_coef = eta * log(1 + beta)
 
         def expectation_l(m):
-            return np.divide(np.exp(-m * alpha * phi(beta)), m * eta * log(1+beta))
+            coefs = np.divide(np.exp(-m * exp_coef), m * div_coef)
+            return coefs
 
         delta = 1 / (gamma_lb * n)
-        delta *= binom.expect(expectation_l, args=(n, gamma_lb), lb=1, tolerance=self.tol_opt, maxcount=100000)
+        expectation_term = binom.expect(expectation_l, args=(n, gamma_lb), lb=1, tolerance=self.tol_opt, maxcount=100000)
+        delta *= expectation_term
 
         return self.threshold_delta(delta)
