@@ -8,5 +8,5 @@ setup(
     author_email='bballe@gmail.com',
     description='Python implementation of the privacy amplification by shuffling results proved in the privacy blanket paper',
     packages=find_packages(),
-    install_requires=['scipy > 1.5.0'],
+    install_requires=['scipy'],
 )
