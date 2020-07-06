@@ -7,6 +7,6 @@ setup(
     author='Borja Balle',
     author_email='bballe@gmail.com',
     description='Python implementation of the privacy amplification by shuffling results proved in the privacy blanket paper',
-    packages=find_packages(),
+    packages=['shuffleddp'],
     install_requires=['scipy'],
 )
