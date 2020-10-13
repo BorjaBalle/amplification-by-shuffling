@@ -195,7 +195,8 @@ class BennettExact(NumericShuffleAmplificationBound):
 
         alpha = c / b_plus**2
         beta = a * b_plus / c
-        eta = a / b_plus
+        #eta = a / b_plus
+        eta = 1.0 / b_plus
 
         def phi(u):
             phi = (1 + u) * log(1 + u) - u
@@ -209,7 +210,8 @@ class BennettExact(NumericShuffleAmplificationBound):
         div_coef = eta * log(1 + beta)
 
         def expectation_l(m):
-            coefs = np.divide(np.exp(-m * exp_coef), m * div_coef)
+            #coefs = np.divide(np.exp(-m * exp_coef), m * div_coef)
+            coefs = np.exp(-m * exp_coef) / div_coef
             return coefs
 
         delta = 1 / (gamma_lb * n)
